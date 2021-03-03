@@ -1,8 +1,6 @@
 * Goal
-  Inject react elements into an existing webpage. For use in browser extensions an 
+  Inject react elements into an existing webpage. For use in browser extensions or electron apps.
+
 * How  
-   + Every new relaoad show only difference between last times 
-     * Add counter to every show
-   + hide thumbnails unless requested to reduce imformation overload and stess
-   + Hide reccomendations that you don't want to watch (opt in to show)
-   + Segregate new reccomendations
+  + Allow React to update on timer
+  + Allow delete or hide original element

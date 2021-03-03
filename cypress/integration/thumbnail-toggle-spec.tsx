@@ -5,7 +5,7 @@ import React from "react";
 
 import {ActionNames} from "../../src/thumbnail-hider";
 import {initializeStoreIntoDOM} from "../../src";
-import {injectElement, showOriginalElement} from "../../src/replace-element";
+import {safeInjectElement, showOriginalElement} from "../../src/replace-element";
 import DOMSelectors from "../../src/tools/youtube-element-selectors";
 const thumbnailReplacementText = "Smoke Weed Everyday";
 const selectors = {

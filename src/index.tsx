@@ -3,52 +3,67 @@ import React from "react";
 
 import {ThumbnailHider} from "./thumbnail-hider";
 import store from "./redux/modules/store";
+import {HTMLElementReplacementPair} from "./replace-element";
+import {
+  ElementShown,
+  getElementShown,
+  getIsOriginalElementHidden,
+  hideOriginalElement,
+  safeInjectElement,
+  showOriginalElement,
+} from "../../replace-element";
 
 type Store = any;
 
-interface InitializerSettings {
-  onComplete?: () => void;
-  renderAtThumbnailIndex?: (index: number) => JSX.Element;
-  currentDocument?: Document;
-  currentStore: Store;
+interface InjectorCreatorSettings {
+  querySelectorString: string;
+  renderAtIndex: (index: number) => JSX.Element;
+  currentDocument: Document;
 }
-export async function initializeStoreIntoDOM(
-  {
-    currentStore = store,
-    renderAtThumbnailIndex = (index: number) => (
-      <Provider store={currentStore}>
-        <ThumbnailHider index={index} />
-      </Provider>
-    ),
-    currentDocument = document,
-    onComplete = () => {},
-  }: InitializerSettings = {
-    currentStore: store,
-    renderAtThumbnailIndex: (index: number) => (
-      <Provider store={currentStore}>
-        <ThumbnailHider index={index} />
-      </Provider>
-    ),
-    currentDocument: document,
-    onComplete: () => {},
-  },
-) {
-  currentStore.dispatch({
-    type: "RESET",
+export function injectReactIntoOne({
+  querySelector,
+  render,
+  currentDocument,
+}: InjectorCreatorSettings) {
+  return injectReactInto({
+    nodeGroupToInjectInto: [
+      currentDocument.querySelectorAll(querySelectorString)[0],
+    ],
+    renderAtIndex: (index: number) => render(),
   });
-  await new Promise((resolve, reject) =>
-    currentStore.dispatch({
-      type: "INITIALIZE",
-      document: currentDocument,
-      onComplete: () => {
-        onComplete();
-        resolve(null);
-      },
-      renderAtIndex: renderAtThumbnailIndex,
-    }),
-  );
 }
-initializeStoreIntoDOM();
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
+
+export function injectReactIntoAllMatches({
+  querySelectorString,
+  renderAtIndex,
+  currentDocument,
+}: InjectorCreatorSettings) {
+  return injectReactInto({
+    nodeGroupToInjectInto: currentDocument.querySelectorAll(
+      querySelectorString,
+    ),
+    renderAtIndex,
+  });
+}
+export function injectReactInto({
+  nodeGroupToInjectInto,
+  renderAtIndex,
+}: InjectorCreatorSettings) {
+  let elementPairs: Array<HTMLElementReplacementPair> = [];
+  nodeGroupToInjectInto.forEach((element, thumbnailIndex) => {
+    const elementPair = safeInjectElement({
+      currentDocument: currentDocument,
+      jsx: renderAtIndex(thumbnailIndex),
+      index: thumbnailIndex,
+    });
+    elementPairs.push(elementPair);
+  });
+  return elementPairs;
+}
+
+function hideOnTimer() {}
+function deleteReplaceElementOnce() {}
+function deleteReplaceElementLoop() {}
+
+function hideReplaceElementOnce() {}
+function hideReplaceElementLoop() {}

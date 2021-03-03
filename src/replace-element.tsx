@@ -11,11 +11,13 @@ export enum ElementShown {
   Original = "Original",
 }
 
-/* export function injectElement({currentDocument: Document}) { */
-export function injectElement({
+const reactContainerSelector = "div[name=react-container]";
+const containerName = "react-container";
+export function safeInjectElement({
+  //safe injecting will not inject twice
   currentDocument,
   jsx,
-  index = 1,
+  index,
 }: {
   currentDocument: Document;
   jsx: ReactElement;
@@ -33,7 +35,6 @@ export function injectElement({
     originalElementContainer: thumbnailContainer,
     currentDocument,
     jsx: jsx,
-    elementIdName: "thumbnail",
   });
   const thumbnailReplacementPair: HTMLElementReplacementPair = {
     originalElementToReplace: originalThumbnail!,
@@ -48,21 +49,32 @@ export function buildReactComponentContainer({
   originalElementContainer,
   currentDocument,
   jsx,
-  elementIdName,
 }: {
   originalElementContainer: HTMLElement;
   currentDocument: Document;
   jsx: ReactElement;
-  elementIdName: string;
 }): HTMLElement {
-  const reactContainer = buildReactContainer({
+  const isContainerAlreadyPresent = getIsReactContainerPresentIn(
+    originalElementContainer,
+  );
+  if (isContainerAlreadyPresent) {
+    return getReactContainer(originalElementContainer);
+  }
+  const reactContainer = createReactContainer({
     currentDocument,
-    elementIdName,
   });
   originalElementContainer.appendChild(reactContainer);
   ReactDOM.render(jsx, reactContainer);
   return reactContainer;
 }
+function getIsReactContainerPresentIn(elementContainer: HTMLElement) {
+  return elementContainer.querySelectorAll(reactContainerSelector).length > 0;
+}
+
+function getReactContainer(elementContainer: HTMLElement) {
+  return elementContainer.querySelectorAll(reactContainerSelector)[0];
+}
+
 export function getIsOriginalElementHidden({
   elementPair,
 }: {
@@ -124,18 +136,9 @@ export function getReactComponent({
   return reactElementParentWithOneReactChild.children[0];
 }
 
-function buildReactContainer({
-  currentDocument,
-  elementIdName,
-}: {
-  currentDocument: Document;
-  elementIdName: string;
-}) {
+function createReactContainer({currentDocument}: {currentDocument: Document}) {
   const thumbnailReactContainer = currentDocument.createElement("div");
-  thumbnailReactContainer.setAttribute(
-    "name",
-    `${elementIdName}-react-container`,
-  );
+  thumbnailReactContainer.setAttribute("name", containerName);
   return thumbnailReactContainer;
 }
 

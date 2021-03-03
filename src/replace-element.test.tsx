@@ -5,7 +5,7 @@ import {ActionNames} from "./thumbnail-hider";
 import {
   HTMLElementReplacementPair,
   getThumbnailAndThumbnailContainer,
-  injectElement,
+  safeInjectElement,
   showOriginalElement,
   showReactElement,
 } from "./replace-element";
@@ -27,7 +27,7 @@ test("get thumbnail successfuly", () => {
 });
 test("replace one thumbnail item ", () => {
   insertYouTubeHTML();
-  const reactOriginalPair = injectElement({
+  const reactOriginalPair = safeInjectElement({
     currentDocument: document,
     jsx: <>{testContent}</>,
     index: 0,
@@ -56,7 +56,7 @@ test("replacement item can be clicked", () => {
   };
 
   insertYouTubeHTML();
-  reactOriginalPair = injectElement({
+  reactOriginalPair = safeInjectElement({
     currentDocument: document,
     jsx: <button onClick={mockFunction}>{ActionNames.toggleThumbnail}</button>,
     index: 0,

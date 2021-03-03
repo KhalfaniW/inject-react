@@ -13,7 +13,7 @@ import {
   getElementShown,
   getIsOriginalElementHidden,
   hideOriginalElement,
-  injectElement,
+  safeInjectElement,
   showOriginalElement,
 } from "../../replace-element";
 import DOMSelectors from "../../tools/youtube-element-selectors";
@@ -67,7 +67,7 @@ export const initializeAppInjectEpic = (action$: any) =>
 
       DOMSelectors.getAllThumbnails(effectStore.document!).forEach(
         (element, thumbnailIndex) => {
-          const elementPair = injectElement({
+          const elementPair = safeInjectElement({
             currentDocument: effectStore.document!,
             jsx: action.renderAtIndex(thumbnailIndex),
             index: thumbnailIndex,

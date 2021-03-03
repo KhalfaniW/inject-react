@@ -5,7 +5,7 @@ import ReactDOM from "react-dom";
 import React from "react";
 
 import {MagicThumbnailWrapper} from "../../src/thumbnail-hider";
-import {injectElement} from "../../src/replace-element";
+import {safeInjectElement} from "../../src/replace-element";
 
 describe("Magic test", function() {
   function disableBrowserExceptions() {

@@ -2,7 +2,7 @@
 /// <reference types="cypress" />
 
 import {
-  injectElement,
+  safeInjectElement,
   showReactElement,
   showOriginalElement,
 } from "../../src/replace-element";
@@ -70,7 +70,7 @@ describe("App", function() {
 
     let thumbnailPair;
     cy.document().then((document) => {
-      thumbnailPair = injectElement({
+      thumbnailPair = safeInjectElement({
         currentDocument: document,
         jsx: createThumbnailJSX(thumbnailReplacementText),
       });
@@ -98,7 +98,7 @@ describe("App", function() {
     cy.get(selectors.thumbnailContainer, {timeout: 10000}).should("be.visible");
     cy.get(selectors.thumbnail, {timeout: 10000}).should("be.visible");
     cy.document().then((document) => {
-      injectElement({
+      safeInjectElement({
         currentDocument: document,
         jsx: createThumbnailJSX(thumbnailReplacementText),
       });
@@ -125,7 +125,7 @@ describe("App", function() {
       cy.log("NOT UNDEFINED");
       const originalThumbnail = thumbnailContainer.querySelector("#thumbnail");
       cy.log("stop loading ");
-      injectElement(document);
+      safeInjectElement(document);
     });
   });
 });

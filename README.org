@@ -1,13 +1,5 @@
 * Goal
- Organize youtube reccomendations to 
-    + reduce randomness
-      + Reduce slot machine style randomness
-        Don't make it random and boring(loss) until new good video pops up (win)
-      + Convert it into a reddit/news style
-        1 new set of random videos in the day 
-    + Elimate reccomended vidos that you *do not want to watch* until you are too bored to resits
-    + eliminate reshowing the same things as if they were new
-       (show same video in 4th-5th position untiil you click it)
+  Inject react elements into an existing webpage. For use in browser extensions an 
 * How  
    + Every new relaoad show only difference between last times 
      * Add counter to every show

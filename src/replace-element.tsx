@@ -1,11 +1,10 @@
 import {ReactElement} from "react";
 import ReactDOM from "react-dom";
-import DOMSelectors from "./tools/youtube-element-selectors";
 
-export interface HTMLElementReplacementPair {
+export type HTMLElementReplacementPair = {
   originalElementToReplace: HTMLElement;
   reactComponentContainer: HTMLElement;
-}
+};
 export enum ElementShown {
   React = "React",
   Original = "Original",
@@ -56,7 +55,7 @@ export function buildReactComponentContainer({
   return reactContainer;
 }
 
-function getReactContainer(elementContainer: HTMLElement) {
+export function getReactContainer(elementContainer: HTMLElement) {
   return elementContainer.querySelectorAll(
     reactContainerSelector,
   )[0] as HTMLElement;

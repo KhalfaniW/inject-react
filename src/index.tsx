@@ -1,22 +1,31 @@
-import {Provider} from "react-redux";
-import React from "react";
-
-import {HTMLElementReplacementPair} from "./replace-element";
 import {
+  ElementShown,
+  getElementShown,
+  getIsOriginalElementHidden,
+  getReactContainer,
+  hideOriginalElement,
+  injectElement,
+  showOriginalElement,
+} from "./replace-element";
+export {
   ElementShown,
   getElementShown,
   getIsOriginalElementHidden,
   hideOriginalElement,
   injectElement,
+  getReactContainer,
   showOriginalElement,
-} from "./replace-element";
+};
+export type HTMLElementReplacementPair = {
+  originalElementToReplace: HTMLElement;
+  reactComponentContainer: HTMLElement;
+};
 
-//use only parent so it does not go in recursivly
-//inject into nonRecursiveChilden children nodes to avoid recursive search and injecting into an existing react component
-
-// use a convuluated element selector paramaters protect against recursive cases
-
-//dont store the config in a variable it may be in sync with the DOM references
+//NOTES
+// + use only parent so it does not go in recursivly
+// + inject into nonRecursiveChilden children nodes to avoid recursive search and injecting into an existing react component
+// + use a convuluated element selector paramaters protect against recursive cases
+// + dont store the config in a variable it may be in sync with the DOM references
 export function injectReactInto({
   immediateParentNode,
   nonRecursiveChildFilterFunction,
@@ -61,10 +70,3 @@ function getIsSafeToInjectInto(element: Element) {
   // only need to check if is react element because of strict selction process
   return element.getAttribute("name") !== "react-container";
 }
-
-function hideOnTimer() {}
-function deleteReplaceElementOnce() {}
-function deleteReplaceElementLoop() {}
-
-function hideReplaceElementOnce() {}
-function hideReplaceElementLoop() {}

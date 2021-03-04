@@ -52,7 +52,7 @@ test("inject react again after adding more elements", () => {
 <div name="secondParent"><div></div></div>
 `;
   const testRender = (index: number) => (
-    <p name="reactElement">testString_{index}</p>
+    <p className="reactElement">testString_{index}</p>
   );
   const addChild = (element: Element) => {
     const documentReference = element.ownerDocument;

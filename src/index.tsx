@@ -6,6 +6,7 @@ import {
   hideOriginalElement,
   injectElement,
   showOriginalElement,
+  showReactElement,
 } from "./replace-element";
 export {
   ElementShown,
@@ -15,6 +16,7 @@ export {
   injectElement,
   getReactContainer,
   showOriginalElement,
+  showReactElement,
 };
 export type HTMLElementReplacementPair = {
   originalElementToReplace: HTMLElement;

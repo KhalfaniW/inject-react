@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+    "outDir": "./lib/",
+    "declaration": true,
+    "noEmit": false,
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
@@ -14,9 +17,7 @@
     "isolatedModules": true,
     "noImplicitAny": false,
     "jsx": "react-jsx",
-    "noFallthroughCasesInSwitch": true,
-    "declaration": true,
-    "noEmit": false
+    "noFallthroughCasesInSwitch": true
   },
   "include": ["src"]
 }

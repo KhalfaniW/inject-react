@@ -3,3 +3,6 @@
 
 * How  
   + Allow React to update on timer
+  + Creates a sibling element to any element you want to replace.
+  + It then stores the reference to the original element and the react container in a pair
+        ~HTMLElementReplacementPair~

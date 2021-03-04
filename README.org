@@ -3,4 +3,3 @@
 
 * How  
   + Allow React to update on timer
-  + Allow delete or hide original element

@@ -1,7 +1,6 @@
 {
-  "name": "cypress-youtube",
+  "name": "inject-react",
   "version": "0.1.0",
-  "private": true,
   "dependencies": {
     "@craco/craco": "^6.1.1",
     "@testing-library/react": "^11.2.2",

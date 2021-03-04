@@ -1,64 +1,65 @@
 import {Provider} from "react-redux";
 import React from "react";
 
-import {ThumbnailHider} from "./thumbnail-hider";
-import store from "./redux/modules/store";
 import {HTMLElementReplacementPair} from "./replace-element";
 import {
   ElementShown,
   getElementShown,
   getIsOriginalElementHidden,
   hideOriginalElement,
-  safeInjectElement,
+  injectElement,
   showOriginalElement,
-} from "../../replace-element";
+} from "./replace-element";
 
-type Store = any;
+//use only parent so it does not go in recursivly
+//inject into nonRecursiveChilden children nodes to avoid recursive search and injecting into an existing react component
 
-interface InjectorCreatorSettings {
-  querySelectorString: string;
-  renderAtIndex: (index: number) => JSX.Element;
-  currentDocument: Document;
-}
-export function injectReactIntoOne({
-  querySelector,
-  render,
-  currentDocument,
-}: InjectorCreatorSettings) {
-  return injectReactInto({
-    nodeGroupToInjectInto: [
-      currentDocument.querySelectorAll(querySelectorString)[0],
-    ],
-    renderAtIndex: (index: number) => render(),
-  });
-}
+// use a convuluated element selector paramaters protect against recursive cases
 
-export function injectReactIntoAllMatches({
-  querySelectorString,
-  renderAtIndex,
-  currentDocument,
-}: InjectorCreatorSettings) {
-  return injectReactInto({
-    nodeGroupToInjectInto: currentDocument.querySelectorAll(
-      querySelectorString,
-    ),
-    renderAtIndex,
-  });
-}
+//dont store the config in a variable it may be in sync with the DOM references
 export function injectReactInto({
-  nodeGroupToInjectInto,
+  immediateParentNode,
+  nonRecursiveChildFilterFunction,
+  previousElementPairs = [],
   renderAtIndex,
-}: InjectorCreatorSettings) {
-  let elementPairs: Array<HTMLElementReplacementPair> = [];
-  nodeGroupToInjectInto.forEach((element, thumbnailIndex) => {
-    const elementPair = safeInjectElement({
-      currentDocument: currentDocument,
-      jsx: renderAtIndex(thumbnailIndex),
-      index: thumbnailIndex,
+}: {
+  immediateParentNode: HTMLElement;
+  nonRecursiveChildFilterFunction: (el: HTMLElement) => boolean;
+  previousElementPairs: Array<HTMLElementReplacementPair>;
+  renderAtIndex: (index: number) => JSX.Element;
+}) {
+  const previousOriginalElements = previousElementPairs.map(
+    (pair) => pair.originalElementToReplace,
+  );
+
+  const currentDocument = immediateParentNode.ownerDocument;
+  const filterChildren = (element: Element) =>
+    nonRecursiveChildFilterFunction(element as HTMLElement);
+  const getIsNotInPreviousElementPairs = (element: Element) =>
+    !previousOriginalElements.includes(element as HTMLElement);
+
+  return Array.from(immediateParentNode.children)
+    .filter(getIsNotInPreviousElementPairs)
+    .filter(filterChildren)
+    .filter(getIsSafeToInjectInto)
+    .map((element, index) => {
+      const offSet = previousElementPairs.length;
+      const newIndex = offSet + index;
+      /* console.log({newIndex, render: renderAtIndex(newIndex)}); */
+
+      const elementPair = injectElement({
+        siblingElementToReplace: element as HTMLElement,
+        currentDocument: currentDocument,
+        jsx: renderAtIndex(newIndex),
+        index: newIndex,
+      });
+      return elementPair;
     });
-    elementPairs.push(elementPair);
-  });
-  return elementPairs;
+}
+
+function getIsSafeToInjectInto(element: Element) {
+  // only need to check if is react element because of strict selction process
+  return element.getAttribute("name") !== "react-container";
 }
 
 function hideOnTimer() {}

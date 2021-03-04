@@ -13,31 +13,25 @@ export enum ElementShown {
 
 const reactContainerSelector = "div[name=react-container]";
 const containerName = "react-container";
-export function safeInjectElement({
+export function injectElement({
   //safe injecting will not inject twice
-  currentDocument,
+  siblingElementToReplace,
   jsx,
-  index,
+  currentDocument,
 }: {
+  //TODO fix any
+  siblingElementToReplace: HTMLElement;
   currentDocument: Document;
   jsx: ReactElement;
   index: number;
 }): HTMLElementReplacementPair {
-  const {
-    thumbnailContainer,
-    originalThumbnail,
-  } = getThumbnailAndThumbnailContainer({
-    currentDocument,
-    thumbnailIndex: index,
-  });
-
   const reactThumbnailParent = buildReactComponentContainer({
-    originalElementContainer: thumbnailContainer,
+    originalElementContainer: siblingElementToReplace.parentElement!,
     currentDocument,
     jsx: jsx,
   });
   const thumbnailReplacementPair: HTMLElementReplacementPair = {
-    originalElementToReplace: originalThumbnail!,
+    originalElementToReplace: siblingElementToReplace,
     reactComponentContainer: reactThumbnailParent!,
   };
   /* showReactElement({elementPair: thumbnailReplacementPair}); */
@@ -54,12 +48,6 @@ export function buildReactComponentContainer({
   currentDocument: Document;
   jsx: ReactElement;
 }): HTMLElement {
-  const isContainerAlreadyPresent = getIsReactContainerPresentIn(
-    originalElementContainer,
-  );
-  if (isContainerAlreadyPresent) {
-    return getReactContainer(originalElementContainer);
-  }
   const reactContainer = createReactContainer({
     currentDocument,
   });
@@ -67,12 +55,11 @@ export function buildReactComponentContainer({
   ReactDOM.render(jsx, reactContainer);
   return reactContainer;
 }
-function getIsReactContainerPresentIn(elementContainer: HTMLElement) {
-  return elementContainer.querySelectorAll(reactContainerSelector).length > 0;
-}
 
 function getReactContainer(elementContainer: HTMLElement) {
-  return elementContainer.querySelectorAll(reactContainerSelector)[0];
+  return elementContainer.querySelectorAll(
+    reactContainerSelector,
+  )[0] as HTMLElement;
 }
 
 export function getIsOriginalElementHidden({
@@ -108,24 +95,7 @@ export function getElementShown({
 
   return ElementShown.Original;
 }
-export function getThumbnailAndThumbnailContainer({
-  currentDocument,
-  thumbnailIndex,
-}: {
-  currentDocument: Document;
-  thumbnailIndex: number;
-}) {
-  const thumbnailContainer = DOMSelectors.getAllThumbnails(currentDocument)[
-    thumbnailIndex
-  ] as HTMLElement;
-  const originalThumbnail = thumbnailContainer.querySelector<HTMLElement>(
-    "#thumbnail",
-  );
-  return {
-    thumbnailContainer,
-    originalThumbnail,
-  };
-}
+
 export function getReactComponent({
   elementPair,
 }: {

@@ -2,6 +2,8 @@ const path = require("path");
 
 module.exports = {
   entry: "./src/index.tsx",
+  //there is no reason to shrink in production mode. dev mode will help debugging
+  mode: "development",
 
   module: {
     rules: [
@@ -18,5 +20,7 @@ module.exports = {
   output: {
     filename: "index.js",
     path: path.resolve(__dirname, "lib"),
+    libraryTarget: "umd",
+    library: "inject-react",
   },
 };

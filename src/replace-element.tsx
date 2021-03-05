@@ -1,5 +1,6 @@
 import {ReactElement} from "react";
-import ReactDOM from "react-dom";
+
+import {RenderFunction} from "./";
 
 export type HTMLElementReplacementPair = {
   originalElementToReplace: HTMLElement;
@@ -17,17 +18,20 @@ export function injectElement({
   siblingElementToReplace,
   jsx,
   currentDocument,
+  ReactDomRenderFunction,
 }: {
   //TODO fix any
   siblingElementToReplace: HTMLElement;
   currentDocument: Document;
   jsx: ReactElement;
   index: number;
+  ReactDomRenderFunction: RenderFunction;
 }): HTMLElementReplacementPair {
   const reactThumbnailParent = buildReactComponentContainer({
     originalElementContainer: siblingElementToReplace.parentElement!,
     currentDocument,
     jsx: jsx,
+    ReactDomRenderFunction,
   });
   const thumbnailReplacementPair: HTMLElementReplacementPair = {
     originalElementToReplace: siblingElementToReplace,
@@ -42,16 +46,18 @@ export function buildReactComponentContainer({
   originalElementContainer,
   currentDocument,
   jsx,
+  ReactDomRenderFunction,
 }: {
   originalElementContainer: HTMLElement;
   currentDocument: Document;
   jsx: ReactElement;
+  ReactDomRenderFunction: RenderFunction;
 }): HTMLElement {
   const reactContainer = createReactContainer({
     currentDocument,
   });
   originalElementContainer.appendChild(reactContainer);
-  ReactDOM.render(jsx, reactContainer);
+  ReactDomRenderFunction(jsx, reactContainer);
   return reactContainer;
 }
 

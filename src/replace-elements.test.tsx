@@ -1,4 +1,5 @@
 import React from "react";
+import ReactDOM from "react-dom";
 
 import {injectReactInto} from "./";
 
@@ -14,6 +15,7 @@ test("inject react once", () => {
     renderAtIndex: (index: number) => (
       <div className="reactElement">{index}</div>
     ),
+    ReactDomRenderFunction: ReactDOM.render,
   });
 
   expect(elementPairs).toHaveLength(1);
@@ -30,6 +32,7 @@ test("inject multiple times has no effect", () => {
     renderAtIndex: (index: number) => (
       <div className="reactElement">{index}</div>
     ),
+    ReactDomRenderFunction: ReactDOM.render,
   });
 
   const elementPairsSecondTime = injectReactInto({
@@ -40,6 +43,7 @@ test("inject multiple times has no effect", () => {
     renderAtIndex: (index: number) => (
       <div className="reactElement">{index}</div>
     ),
+    ReactDomRenderFunction: ReactDOM.render,
   });
 
   expect(elementPairsSecondTime).toEqual([]);
@@ -68,6 +72,7 @@ test("inject react again after adding more elements", () => {
       element.tagName.toLowerCase() === "div",
     previousElementPairs: [],
     renderAtIndex: testRender,
+    ReactDomRenderFunction: ReactDOM.render,
   });
 
   for (var i = 0; i < 4; i++) {
@@ -81,6 +86,7 @@ test("inject react again after adding more elements", () => {
       element.tagName.toLowerCase() === "div",
     previousElementPairs: elementPairsFirstTime,
     renderAtIndex: testRender,
+    ReactDomRenderFunction: ReactDOM.render,
   });
 
   expect(elementPairsSecondTime).toHaveLength(4);

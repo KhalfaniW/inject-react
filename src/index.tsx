@@ -8,6 +8,7 @@ import {
   showOriginalElement,
   showReactElement,
 } from "./replace-element";
+import {Renderer} from "react-dom";
 export {
   ElementShown,
   getElementShown,
@@ -22,6 +23,7 @@ export type HTMLElementReplacementPair = {
   originalElementToReplace: HTMLElement;
   reactComponentContainer: HTMLElement;
 };
+export type RenderFunction = Renderer;
 
 //NOTES
 // + use only parent so it does not go in recursivly
@@ -33,11 +35,14 @@ export function injectReactInto({
   nonRecursiveChildFilterFunction,
   previousElementPairs = [],
   renderAtIndex,
+  //Having ReactDOM.render as a depenncy will break with different react versions
+  ReactDomRenderFunction,
 }: {
   immediateParentNode: HTMLElement;
   nonRecursiveChildFilterFunction: (el: HTMLElement) => boolean;
   previousElementPairs: Array<HTMLElementReplacementPair>;
   renderAtIndex: (index: number) => JSX.Element;
+  ReactDomRenderFunction: RenderFunction;
 }) {
   const previousOriginalElements = previousElementPairs.map(
     (pair) => pair.originalElementToReplace,
@@ -63,6 +68,7 @@ export function injectReactInto({
         currentDocument: currentDocument,
         jsx: renderAtIndex(newIndex),
         index: newIndex,
+        ReactDomRenderFunction,
       });
       return elementPair;
     });
